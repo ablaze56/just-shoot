@@ -6,6 +6,40 @@ const startScreen = document.getElementById('startScreen');
 const gameOverScreen = document.getElementById('gameOver');
 const finalScoreElement = document.getElementById('finalScore');
 
+// Game state
+let gameState = 'menu'; // 'menu', 'playing', 'gameOver'
+let gameRunning = false;
+
+// Player object - will be initialized after Player class is defined
+let player;
+
+// Mouse position
+let mouseX = 0;
+let mouseY = 0;
+
+// Arrays for game objects
+let bullets = [];
+let enemies = [];
+let particles = [];
+let powerUps = [];
+
+// Game stats
+let score = 0;
+let wave = 1;
+let enemiesSpawned = 0;
+let enemiesKilled = 0;
+let lastEnemySpawn = 0;
+let enemySpawnRate = 2000; // milliseconds
+
+// First-person camera
+const camera = {
+    x: 0,
+    y: 0,
+    angle: 0,
+    fov: Math.PI / 3, // 60 degrees
+    renderDistance: 500
+};
+
 // Responsive canvas setup
 function resizeCanvas() {
     const container = document.getElementById('gameContainer');
@@ -22,22 +56,6 @@ function resizeCanvas() {
 // Initialize canvas size
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
-
-// Game state
-let gameState = 'menu'; // 'menu', 'playing', 'gameOver'
-let gameRunning = false;
-
-// Player object - will be initialized after Player class is defined
-let player;
-
-// First-person camera
-const camera = {
-    x: 0,
-    y: 0,
-    angle: 0,
-    fov: Math.PI / 3, // 60 degrees
-    renderDistance: 500
-};
 
 // Realistic weapons database
 const weapons = {
@@ -95,24 +113,6 @@ const weapons = {
         type: "shotgun"
     }
 };
-
-// Mouse position
-let mouseX = 0;
-let mouseY = 0;
-
-// Arrays for game objects
-let bullets = [];
-let enemies = [];
-let particles = [];
-let powerUps = [];
-
-// Game stats
-let score = 0;
-let wave = 1;
-let enemiesSpawned = 0;
-let enemiesKilled = 0;
-let lastEnemySpawn = 0;
-let enemySpawnRate = 2000; // milliseconds
 
 // Input handling
 const keys = {};

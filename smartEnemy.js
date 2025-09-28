@@ -77,7 +77,7 @@ class SmartEnemy {
         // Calculate player velocity for prediction
         this.playerVelocity.x = player.x - this.playerLastPosition.x;
         this.playerVelocity.y = player.y - this.playerLastPosition.y;
-        this.playerLastPosition = { x: player.x, y: y: player.y };
+        this.playerLastPosition = { x: player.x, y: player.y };
         
         // State transitions based on distance and AI intelligence
         if (distance < 50 && this.aggression > 0.7) {
