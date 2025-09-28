@@ -1039,6 +1039,11 @@ function startGame() {
     gameRunning = true;
     startScreen.style.display = 'none';
     
+    // Initialize terrain system if not already done
+    if (typeof initializeTerrainSystem === 'function') {
+        initializeTerrainSystem();
+    }
+    
     // Reset game state
     player.x = canvas.width / 2;
     player.y = canvas.height / 2;

@@ -3,7 +3,8 @@ class TerrainSystem {
     constructor() {
         this.terrainElements = [];
         this.groundLevel = 0.7; // 70% down the screen
-        this.generateTerrain();
+        this.initialized = false;
+        // Don't generate terrain immediately - wait for canvas
     }
     
     generateTerrain() {
@@ -12,6 +13,10 @@ class TerrainSystem {
             setTimeout(() => this.generateTerrain(), 100);
             return;
         }
+        
+        // Only generate terrain once
+        if (this.initialized) return;
+        this.initialized = true;
         
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
@@ -340,5 +345,13 @@ class Flower {
     }
 }
 
-// Global terrain system
-const terrainSystem = new TerrainSystem();
+// Global terrain system - will be initialized when canvas is ready
+let terrainSystem;
+
+// Initialize terrain system when canvas is available
+function initializeTerrainSystem() {
+    if (!terrainSystem && typeof canvas !== 'undefined') {
+        terrainSystem = new TerrainSystem();
+        terrainSystem.generateTerrain();
+    }
+}
