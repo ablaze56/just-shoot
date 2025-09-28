@@ -1154,8 +1154,10 @@ function gameLoop() {
     inventory.update();
     floorItemSpawner.update();
     
-    // Update terrain
-    terrainSystem.update();
+    // Update terrain (if available)
+    if (typeof terrainSystem !== 'undefined') {
+        terrainSystem.update();
+    }
     
     // Game logic
     checkCollisions();
@@ -1176,8 +1178,10 @@ function gameLoop() {
     particles.forEach(particle => particle.draw());
     powerUps.forEach(powerUp => powerUp.draw());
     
-    // Draw terrain
-    terrainSystem.draw();
+    // Draw terrain (if available)
+    if (typeof terrainSystem !== 'undefined') {
+        terrainSystem.draw();
+    }
     
     // Draw floor items
     floorItemSpawner.draw();

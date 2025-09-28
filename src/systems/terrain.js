@@ -7,6 +7,12 @@ class TerrainSystem {
     }
     
     generateTerrain() {
+        // Wait for canvas to be available
+        if (typeof canvas === 'undefined') {
+            setTimeout(() => this.generateTerrain(), 100);
+            return;
+        }
+        
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
         const groundY = canvasHeight * this.groundLevel;
