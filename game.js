@@ -29,7 +29,7 @@ let wave = 1;
 let enemiesSpawned = 0;
 let enemiesKilled = 0;
 let lastEnemySpawn = 0;
-let enemySpawnRate = 4000; // milliseconds - slower spawning
+let enemySpawnRate = 8000; // milliseconds - much slower spawning
 
 // First-person camera
 const camera = {
@@ -277,7 +277,7 @@ class Player {
         this.y = y;
         this.width = 20;
         this.height = 20;
-        this.speed = 2.5;
+        this.speed = 1.5;
         this.health = 100;
         this.maxHealth = 100;
         this.angle = 0;
@@ -1185,7 +1185,7 @@ function gameLoop() {
     if (enemiesKilled >= 10 + wave * 5) {
         wave++;
         enemiesKilled = 0;
-        enemySpawnRate = Math.max(2000, enemySpawnRate - 50); // Slower difficulty increase
+        enemySpawnRate = Math.max(4000, enemySpawnRate - 25); // Much slower difficulty increase
     }
     
     // Draw everything

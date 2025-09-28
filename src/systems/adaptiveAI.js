@@ -12,16 +12,16 @@ class AdaptiveAI {
         };
         
         this.currentDifficulty = {
-            reactionTime: 1500,      // How fast bots react (slower)
-            accuracy: 0.2,           // How accurate bots are (less accurate)
-            movementSpeed: 0.8,      // How fast bots move (slower)
-            aggression: 0.3,         // How aggressive bots are (less aggressive)
-            intelligence: 0.2,       // How smart bots are (less smart)
-            health: 40,              // Bot health (less health)
-            damage: 20               // Bot damage (less damage)
+            reactionTime: 2500,      // How fast bots react (much slower)
+            accuracy: 0.1,           // How accurate bots are (very inaccurate)
+            movementSpeed: 0.4,      // How fast bots move (very slow)
+            aggression: 0.1,         // How aggressive bots are (very passive)
+            intelligence: 0.1,       // How smart bots are (very dumb)
+            health: 30,              // Bot health (very low health)
+            damage: 15               // Bot damage (very low damage)
         };
         
-        this.adaptationRate = 0.1; // How quickly AI adapts
+        this.adaptationRate = 0.05; // How quickly AI adapts (much slower)
     }
     
     // Update AI difficulty based on current game performance
