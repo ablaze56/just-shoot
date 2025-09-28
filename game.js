@@ -265,7 +265,7 @@ class Player {
         this.y = y;
         this.width = 20;
         this.height = 20;
-        this.speed = 3;
+        this.speed = 4;
         this.health = 100;
         this.maxHealth = 100;
         this.angle = 0;
@@ -273,6 +273,13 @@ class Player {
         this.weaponBobSpeed = 0.3;
         this.recoil = 0;
         this.recoilRecovery = 0.05;
+        
+        // Ground physics
+        this.groundY = canvas.height * 0.7; // Ground level
+        this.isOnGround = true;
+        this.velocityY = 0;
+        this.jumpPower = 8;
+        this.gravity = 0.5;
         
         // Weapon system
         this.currentWeapon = 'rifle';
@@ -334,11 +341,26 @@ class Player {
 
         // Update position
         this.x += moveX;
-        this.y += moveY;
+        
+        // Ground physics
+        if (keys[' '] && this.isOnGround) { // Spacebar to jump
+            this.velocityY = -this.jumpPower;
+            this.isOnGround = false;
+        }
+        
+        // Apply gravity
+        this.velocityY += this.gravity;
+        this.y += this.velocityY;
+        
+        // Ground collision
+        if (this.y + this.height >= this.groundY) {
+            this.y = this.groundY - this.height;
+            this.velocityY = 0;
+            this.isOnGround = true;
+        }
 
         // Keep player in bounds
         this.x = Math.max(50, Math.min(canvas.width - 50, this.x));
-        this.y = Math.max(50, Math.min(canvas.height - 50, this.y));
 
         // Weapon bobbing
         if (moveX !== 0 || moveY !== 0) {
@@ -383,6 +405,11 @@ class Player {
                 magicItemSystem.activateSwordAbility(this.equippedSword, this, mouseX, mouseY);
                 this.lastSwordSwing = now;
             }
+        }
+        
+        // Inventory controls
+        if (keys['i']) {
+            inventory.toggle();
         }
     }
 
@@ -620,13 +647,20 @@ class Enemy {
         this.y = y;
         this.width = 25;
         this.height = 25;
-        this.speed = 1 + Math.random() * 2;
-        this.health = 50 + wave * 10;
+        this.speed = 1.5 + Math.random() * 1.5; // Slower, more beatable
+        this.health = 30 + wave * 5; // Less health, more beatable
         this.maxHealth = this.health;
         this.lastShot = 0;
-        this.shootCooldown = 1000 + Math.random() * 1000;
+        this.shootCooldown = 1500 + Math.random() * 1000; // Slower shooting
         this.color = '#e74c3c';
         this.angle = 0;
+        
+        // Ground physics
+        this.groundY = canvas.height * 0.7;
+        this.isOnGround = true;
+        this.velocityY = 0;
+        this.gravity = 0.3;
+        this.jumpChance = 0.01; // Small chance to jump
     }
 
     update() {
@@ -636,14 +670,31 @@ class Enemy {
         const distance = Math.sqrt(dx * dx + dy * dy);
         
         if (distance > 0) {
+            // Move horizontally towards player
             this.x += (dx / distance) * this.speed;
-            this.y += (dy / distance) * this.speed;
             this.angle = Math.atan2(dy, dx);
+            
+            // Small chance to jump
+            if (Math.random() < this.jumpChance && this.isOnGround) {
+                this.velocityY = -4;
+                this.isOnGround = false;
+            }
+        }
+        
+        // Apply gravity
+        this.velocityY += this.gravity;
+        this.y += this.velocityY;
+        
+        // Ground collision
+        if (this.y + this.height >= this.groundY) {
+            this.y = this.groundY - this.height;
+            this.velocityY = 0;
+            this.isOnGround = true;
         }
 
-        // Shooting
+        // Shooting - less accurate and slower
         const now = Date.now();
-        if (now - this.lastShot > this.shootCooldown && distance < 200) {
+        if (now - this.lastShot > this.shootCooldown && distance < 150) {
             this.shoot();
             this.lastShot = now;
         }
@@ -651,12 +702,19 @@ class Enemy {
 
     shoot() {
         const angle = Math.atan2(player.y - this.y, player.x - this.x);
+        // Add inaccuracy to make enemies more beatable
+        const inaccuracy = (Math.random() - 0.5) * 0.5;
+        const finalAngle = angle + inaccuracy;
+        
         bullets.push(new Bullet(
             this.x + this.width/2,
             this.y + this.height/2,
-            Math.cos(angle) * 5,
-            Math.sin(angle) * 5,
-            'enemy'
+            Math.cos(finalAngle) * 4, // Slower bullets
+            Math.sin(finalAngle) * 4,
+            'enemy',
+            20, // Less damage
+            150, // Shorter range
+            4
         ));
     }
 
@@ -695,12 +753,12 @@ class Enemy {
         // Calculate angle relative to camera
         const angle = Math.atan2(dy, dx) - camera.angle;
         
-        // Project to screen coordinates
-        const screenX = canvas.width / 2 + Math.tan(angle) * (canvas.width / 2);
+        // Project to screen coordinates with better visibility
+        const screenX = canvas.width / 2 + Math.tan(angle) * (canvas.width / 3);
         const screenY = canvas.height / 2;
         
-        // Calculate size based on distance
-        const size = Math.max(10, 100 - distance / 5);
+        // Calculate size based on distance - make enemies bigger and more visible
+        const size = Math.max(30, 150 - distance / 3);
         
         // Don't render if behind player
         if (Math.abs(angle) > Math.PI / 2) return;
@@ -1092,6 +1150,13 @@ function gameLoop() {
     magicItemSystem.update();
     magicSpawner.update();
     
+    // Update inventory and floor items
+    inventory.update();
+    floorItemSpawner.update();
+    
+    // Update terrain
+    terrainSystem.update();
+    
     // Game logic
     checkCollisions();
     spawnEnemies();
@@ -1111,9 +1176,18 @@ function gameLoop() {
     particles.forEach(particle => particle.draw());
     powerUps.forEach(powerUp => powerUp.draw());
     
+    // Draw terrain
+    terrainSystem.draw();
+    
+    // Draw floor items
+    floorItemSpawner.draw();
+    
     // Draw magic items and effects
     magicSpawner.draw();
     magicItemSystem.draw();
+    
+    // Draw inventory
+    inventory.draw();
     
     // Draw wave info
     ctx.fillStyle = 'white';

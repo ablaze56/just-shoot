@@ -254,11 +254,14 @@
                 <p><strong>Desktop Controls:</strong></p>
                 <p>WASD - Move | Mouse - Look Around | Click - Shoot | R - Reload</p>
                 <p>1-4 - Switch Weapons | Q - Use Magic Mask | E - Swing Magic Sword</p>
+                <p>I - Open/Close Inventory | Space - Jump | Arrow Keys - Navigate Inventory</p>
                 <p><strong>Mobile Controls:</strong></p>
                 <p>Use touch controls at bottom of screen</p>
                 <p><strong>Magic Items:</strong></p>
                 <p>🎭 Masks: Invisibility, Fireballs, Lightning, Healing</p>
                 <p>⚔️ Swords: Flame, Frost, Lightning, Shadow, Healing</p>
+                <p><strong>Inventory System:</strong></p>
+                <p>🔫 Weapons | 🎭 Masks | ⚔️ Swords | ❤️ Health | 🔫 Ammo | ✨ Magic</p>
                 <p><strong>First-Person Shooter Mode</strong></p>
             </div>
             <button onclick="startGame()">Start Game</button>
@@ -272,12 +275,22 @@
     </div>
     
     <!-- Game Scripts -->
-    <script src="config.js"></script>
-    <script src="weapons.js"></script>
-    <script src="adaptiveAI.js"></script>
-    <script src="smartEnemy.js"></script>
-    <script src="magicItems.js"></script>
-    <script src="magicSpawner.js"></script>
+    <!-- Core Systems -->
+    <script src="src/utils/config.js"></script>
+    <script src="src/systems/weapons.js"></script>
+    <script src="src/systems/adaptiveAI.js"></script>
+    <script src="src/systems/magicItems.js"></script>
+    <script src="src/systems/magicSpawner.js"></script>
+    <script src="src/systems/terrain.js"></script>
+    
+    <!-- Entities -->
+    <script src="src/entities/smartEnemy.js"></script>
+    <script src="src/entities/floorItems.js"></script>
+    
+    <!-- UI Systems -->
+    <script src="src/ui/inventory.js"></script>
+    
+    <!-- Main Game -->
     <script src="game.js"></script>
 </body>
 </html>
