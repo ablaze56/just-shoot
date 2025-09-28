@@ -29,7 +29,7 @@ let wave = 1;
 let enemiesSpawned = 0;
 let enemiesKilled = 0;
 let lastEnemySpawn = 0;
-let enemySpawnRate = 2000; // milliseconds
+let enemySpawnRate = 4000; // milliseconds - slower spawning
 
 // First-person camera
 const camera = {
@@ -126,8 +126,17 @@ let touchControls = {
     reloadButton: { active: false }
 };
 
-// Mobile detection
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+// Enhanced mobile detection
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                 ('ontouchstart' in window) || 
+                 (navigator.maxTouchPoints > 0);
+
+// Orientation change handling
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        resizeCanvas();
+    }, 100);
+});
 
 // Event listeners
 document.addEventListener('keydown', (e) => {
@@ -155,6 +164,7 @@ canvas.addEventListener('mouseup', (e) => {
 // Touch event listeners
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
     const x = touch.clientX - rect.left;
@@ -168,10 +178,11 @@ canvas.addEventListener('touchstart', (e) => {
         mouseX = x;
         mouseY = y;
     }
-});
+}, { passive: false });
 
 canvas.addEventListener('touchmove', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
     const x = touch.clientX - rect.left;
@@ -183,16 +194,17 @@ canvas.addEventListener('touchmove', (e) => {
         mouseX = x;
         mouseY = y;
     }
-});
+}, { passive: false });
 
 canvas.addEventListener('touchend', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (isMobile) {
         handleTouchControls('end', 0, 0);
     } else {
         mousePressed = false;
     }
-});
+}, { passive: false });
 
 // Touch control handling
 function handleTouchControls(action, x, y) {
@@ -265,7 +277,7 @@ class Player {
         this.y = y;
         this.width = 20;
         this.height = 20;
-        this.speed = 4;
+        this.speed = 2.5;
         this.health = 100;
         this.maxHealth = 100;
         this.angle = 0;
@@ -1173,7 +1185,7 @@ function gameLoop() {
     if (enemiesKilled >= 10 + wave * 5) {
         wave++;
         enemiesKilled = 0;
-        enemySpawnRate = Math.max(500, enemySpawnRate - 100);
+        enemySpawnRate = Math.max(2000, enemySpawnRate - 50); // Slower difficulty increase
     }
     
     // Draw everything

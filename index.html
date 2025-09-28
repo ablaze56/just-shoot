@@ -154,69 +154,162 @@
             line-height: 1.4;
         }
         
-        /* Mobile touch controls */
+        /* Enhanced Mobile touch controls */
         #mobileControls {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 30vh;
+            height: 35vh;
             display: none;
             z-index: 15;
             pointer-events: auto;
+            touch-action: none;
         }
         
         .touch-control {
             position: absolute;
-            background: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            border: 3px solid rgba(255,255,255,0.6);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            transition: all 0.15s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             touch-action: manipulation;
             user-select: none;
         }
         
         #moveStick {
-            bottom: 5vh;
-            left: 5vw;
-            width: 15vh;
-            height: 15vh;
+            bottom: 8vh;
+            left: 6vw;
+            width: clamp(70px, 14vw, 110px);
+            height: clamp(70px, 14vw, 110px);
+            background: rgba(0,150,255,0.2);
+            border-color: rgba(0,150,255,0.7);
         }
         
         #lookArea {
-            bottom: 5vh;
-            right: 5vw;
-            width: 20vh;
-            height: 15vh;
+            bottom: 8vh;
+            right: 6vw;
+            width: clamp(90px, 18vw, 140px);
+            height: clamp(90px, 18vw, 140px);
+            background: rgba(255,255,0,0.2);
+            border-color: rgba(255,255,0,0.7);
             border-radius: 10px;
         }
         
         #shootButton {
-            bottom: 8vh;
-            right: 30vw;
-            width: 12vh;
-            height: 12vh;
+            bottom: 20vh;
+            right: 6vw;
+            width: clamp(60px, 12vw, 90px);
+            height: clamp(60px, 12vw, 90px);
             background: rgba(255,0,0,0.3);
-            border-color: rgba(255,0,0,0.7);
+            border-color: rgba(255,0,0,0.8);
         }
         
         #reloadButton {
-            bottom: 8vh;
-            right: 15vw;
-            width: 10vh;
-            height: 10vh;
+            bottom: 30vh;
+            right: 6vw;
+            width: clamp(50px, 10vw, 70px);
+            height: clamp(50px, 10vw, 70px);
             background: rgba(0,255,0,0.3);
-            border-color: rgba(0,255,0,0.7);
+            border-color: rgba(0,255,0,0.8);
+        }
+        
+        .touch-control:active {
+            transform: scale(0.9);
+            background: rgba(255,255,255,0.3);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        
+        #shootButton:active {
+            background: rgba(255,0,0,0.6);
+            transform: scale(0.9);
+        }
+        
+        #reloadButton:active {
+            background: rgba(0,255,0,0.6);
+            transform: scale(0.9);
+        }
+        
+        /* Responsive breakpoints */
+        @media (max-width: 768px) {
+            #gameContainer {
+                border: 2px solid #333;
+                border-radius: 8px;
+            }
+            
+            .ui-element {
+                font-size: clamp(12px, 4vw, 18px) !important;
+            }
+            
+            #weaponInfo {
+                padding: 6px 10px;
+                font-size: clamp(10px, 3vw, 16px) !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #gameContainer {
+                border: 1px solid #333;
+                border-radius: 5px;
+            }
+            
+            .ui-element {
+                font-size: clamp(10px, 5vw, 16px) !important;
+            }
+            
+            #weaponInfo {
+                padding: 4px 8px;
+                font-size: clamp(8px, 4vw, 14px) !important;
+            }
+            
+            #moveStick, #lookArea {
+                width: clamp(60px, 16vw, 90px) !important;
+                height: clamp(60px, 16vw, 90px) !important;
+            }
+            
+            #shootButton, #reloadButton {
+                width: clamp(50px, 14vw, 70px) !important;
+                height: clamp(50px, 14vw, 70px) !important;
+            }
         }
         
         /* Show mobile controls on touch devices */
         @media (hover: none) and (pointer: coarse) {
             #mobileControls {
                 display: block;
+            }
+            
+            body {
+                overflow: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        /* Landscape orientation adjustments */
+        @media (orientation: landscape) and (max-height: 500px) {
+            #mobileControls {
+                height: 40vh;
+            }
+            
+            #moveStick, #lookArea {
+                bottom: 10vh;
+            }
+            
+            #shootButton {
+                bottom: 25vh;
+            }
+            
+            #reloadButton {
+                bottom: 35vh;
             }
         }
     </style>
